@@ -133,7 +133,7 @@ async function cmdPull(args) {
     changed++;
   }
   saveState(root, st);
-  console.log(`pull: ${changed} updated, ${unchanged} unchanged (repo ${st.owner}/${st.repo} @ ${(args.url || st.baseUrl)})`);
+  console.log(`pull: ${changed} updated, ${unchanged} unchanged (repo ${st.owner}/${st.name} @ ${(args.url || st.baseUrl)})`);
 }
 
 async function cmdOpen(args, number) {
