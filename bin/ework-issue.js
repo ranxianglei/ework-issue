@@ -254,8 +254,8 @@ function parseArgs(argv) {
   const args = {}; const pos = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a.startsWith("--")) {
-      const k = a.slice(2);
+    if (a.startsWith("--") || (a.startsWith("-") && a.length === 2)) {
+      const k = a.replace(/^-+/, "");
       if (k === "close" || k === "reopen" || k === "save-token" || k === "fresh") args[k] = true;
       else { args[k] = argv[++i]; }
     } else pos.push(a);
