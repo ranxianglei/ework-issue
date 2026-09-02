@@ -1,0 +1,9 @@
+{
+  "name": "ework-issue",
+  "version": "0.1.0",
+  "description": "Command-line issue browser/editor for ework webs (sync-directory mode)",
+  "type": "module",
+  "bin": { "ework-issue": "bin/ework-issue.js" },
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/ranxianglei/ework-issue.git" }
+}
