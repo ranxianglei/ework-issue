@@ -118,12 +118,12 @@ function parseFrontMatter(text) {
 async function cmdPull(args) {
   const root = rootDir(args), st = loadState(root);
   const state = args.state || "all";
-  const data = await api(st, args, `/api/v1/issues?owner=${st.owner}&repo=${st.repo}&state=${state}`, {});
+  const data = await api(st, args, `/api/v1/issues?owner=${st.owner}&repo=${st.name}&state=${state}`, {});
   let changed = 0, unchanged = 0;
   for (const it of data.issues) {
     const prev = st.issues?.[String(it.number)];
     if (prev && prev.updatedAt === it.updated_at && findIssueDir(root, it.number)) { unchanged++; continue; }
-    const d = await api(st, args, `/api/v1/issues/${it.number}?owner=${st.owner}&repo=${st.repo}`, {});
+    const d = await api(st, args, `/api/v1/issues/${it.number}?owner=${st.owner}&repo=${st.name}`, {});
     const w = writeIssueFiles(root, d.issue, d.comments);
     st.issues = st.issues || {};
     st.issues[String(it.number)] = {
@@ -138,7 +138,7 @@ async function cmdPull(args) {
 
 async function cmdOpen(args, number) {
   const root = rootDir(args), st = loadState(root);
-  const d = await api(st, args, `/api/v1/issues/${number}?owner=${st.owner}&repo=${st.repo}`, {});
+  const d = await api(st, args, `/api/v1/issues/${number}?owner=${st.owner}&repo=${st.name}`, {});
   const line = "─".repeat(72);
   console.log(line);
   console.log(`#${d.issue.number} [${d.issue.state}] ${d.issue.title}`);
@@ -158,7 +158,7 @@ async function postComment(st, args, number, body, opts = {}) {
   const payload = { body };
   if (opts.close) payload.close = true;
   if (opts.reopen) payload.reopen = true;
-  return api(st, args, `/api/${st.owner}/${st.repo}/issues/${number}/comment`, { method: "POST", body: JSON.stringify(payload) });
+  return api(st, args, `/api/${st.owner}/${st.name}/issues/${number}/comment`, { method: "POST", body: JSON.stringify(payload) });
 }
 
 async function cmdComment(args, number, text) {
@@ -201,7 +201,7 @@ async function cmdPush(args) {
 
     // 2) meta.json state change → close/reopen (with conflict check)
     if (rec.state !== meta.state) {
-      const d = await api(st, args, `/api/v1/issues/${meta.number}?owner=${st.owner}&repo=${st.repo}`, {});
+      const d = await api(st, args, `/api/v1/issues/${meta.number}?owner=${st.owner}&repo=${st.name}`, {});
       if (d.issue.state !== rec.state) {
         console.log(`CONFLICT #${meta.number}: server state is "${d.issue.state}", local base was "${rec.state}" — pull first`);
         conflicts.push(meta.number); skipped++;
